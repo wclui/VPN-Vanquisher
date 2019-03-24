@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<head>
+        <script src="https://www.gstatic.com/firebasejs/5.8.6/firebase.js"></script>
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkysM-UPC1j6pS0wVztueuFM5jfIpZxHo"></script>
+        <script>
+
+        // Initialize Firebase
+        const config = {
+            apiKey: "AIzaSyA0kNyJpC-3VSPQRhcXFmre3Vwq7Pijiww",
+            authDomain: "bigsad-ff378.firebaseapp.com",
+            databaseURL: "https://bigsad-ff378.firebaseio.com",
+            projectId: "bigsad-ff378",
+            storageBucket: "bigsad-ff378.appspot.com",
+            messagingSenderId: "693441666986"
+    }
+    firebase.initializeApp(config)
+
+        function downloadFile() {
+            // Create a reference with an initial file path and name
+            var storage = firebase.storage()
+
+            storage.ref('appFiles/TranscoreApp.zip').getDownloadURL().then(function(url) {
+            // `url` is the download URL for 'images/stars.jpg'
+ 
+            // This can be downloaded directly:
+            var xhr = new XMLHttpRequest();
+
+            xhr.responseType = 'blob';
+            
+            xhr.onload = function(event) {
+                var blob = xhr.response;
+                saveBlob(blob, 'TranscoreApp.zip');
+            };
+            xhr.open('GET', url);
+            xhr.send();
+            console.log(blob);
+            
+            function saveBlob(blob, fileName) {
+                var a = document.createElement('a');
+                a.href = window.URL.createObjectURL(blob);
+                a.download = fileName;
+                a.click();
+                }
+            }).catch(function(error) {
+            // Handle any errors
+            });
+           
+        }
+    </script>
+    <title>Transcode Download</title>
+<style>
+h1, h2, h3, h4, #downloadButton, #button {
+    text-align: center;
+    font-family: sans-serif;
+}
+h1 {
+    font-size:3em;
+}
+h2 {
+    font-size:1.5em;   
+}
+#header {
+    background-color:rgb(209, 209, 209);
+    margin:0;
+    padding:2em;
+    background-image: url("images/computers.jpg");
+}
+h1, h3 {
+    color:white;
+}
+#button {
+
+}
+#ourSelves {
+    font-weight: 300;
+    padding: 0 2em;
+}
+#header {
+    background-color:rgb(209, 209, 209);
+    margin:0;
+    padding:2em;
+    height: 30em;
+}
+#thankYou {
+    font-weight:400;
+    font-size: 1.5em;
+    padding-top:1.5em;
+}
+img {
+    padding-bottom: 2em;
+}
+#bottom {
+    padding:2em;
+}
+button {
+    padding:2em;
+    color:rgb(75, 75, 75);
+    border-radius: 12px;
+    background:rgb(226, 226, 226);
+    border:white;
+}
+button:hover{
+    background:grey;
+    color:white;
+}
+</style>
+</head>
+<body> 
+    <div>
+        <div id="header" >
+            <img src="images/TranscoreLogo.png" style="text-align:center; width:18em">
+            <h1>Trusted Transportation Solutions</h1>
+            <h3 id="ourSelves">For more than 80 years, TransCore has specialized in developing innovative transportation solutions that support government agencies and private firms around the world.</h3>
+            <h1 id="thankYou"> Thank you for Choosing Loadlink</h1>
+        </div>
+        <div id="bottom">
+            <h2>Click Here to Download Loadlink</h2>
+        <div id="button">
+            <button id="downloadButton" onclick="downloadFile()" type="button" >Download</button>
+        </div>
+        </div>
+    </div> 
+
+
+
+<script>
+        //   gs://bigsad-ff378.appspot.com
+        //   https://bigsad-ff378.firebaseio.com/
+    var user = {
+        'organization' : 'unknown',
+        'city' : 'nowhere',
+        'address' : '123 sesame street',
+        'usr_id' : 'H6L23cEf',
+        'email' : 'nobody@nowhere.ca'
+    }
+    
+    function onSubmit(){
+        $.getJSON('https://ipapi.co/json/', function(data) {
+            console.log(data.ip);
+            const bigsad = $.ajax({
+                url: 'http://www.whoisxmlapi.com/whoisserver/WhoisService',
+                dataType: 'jsonp',
+                data: {
+                    apiKey:"at_YTyTb4nkfTyjGFKWE9Pl84nm58rNQ",
+                    domainName: data.ip,
+                    outputFormat: 'json',
+                    _parse:1,
+                    registryRawText:1
+                },
+                success: function(record) {
+                    return record
+                }
+            })
+        }).then((record)=>{
+            user.city = record.city
+            user.organization = record.org
+            user.address = record.address
+            user.email = document.getElementById("email").value
+            const apiKey = "AIzaSyBkysM-UPC1j6pS0wVztueuFM5jfIpZxHo"
+            var geocoder = new google.maps.Geocoder;
+            var latlng = {lat: record.latitude, lng: record.longitude};
+            geocoder.geocode({'location': latlng}, function(results, status) {
+                if (status === 'OK') {
+                    if (results[0]) {
+                        user.address=results[0].formatted_address
+                        console.log(user)
+                    } else {
+                        window.alert('No results found');
+                    }
+                } else {
+                    window.alert('Geocoder failed due to: ' + status);
+                }
+            });
+            
+        })
+    } 
+    </script>
+    </body>
